@@ -126,6 +126,10 @@ def count_repeats(xs, x):
 
     first = find_first(0, len(xs) - 1)
     last = find_last(0, len(xs) - 1)
+    if first == -1 and last == -1:
+        return 0
+    if first == -1 or last == -1:
+        return 1
     return last - first + 1
 
 
@@ -172,20 +176,21 @@ def argmin(f, lo, hi, epsilon=1e-3):
     -0.00016935087808430278
     '''
 
-    if (hi - lo) < epsilon:
-        return hi
-    m1 = (lo + hi) / 3 + lo
-    m2 = (lo + hi) / 3 + hi
-
-    if f(m1) > f(m2):
-        return argmin(f, m1, hi)
-    elif f(m1) < f(m2):
-        return argmin(f, lo, m2)
-
+    def helper(lo, hi):
+        if (hi - lo) < epsilon:
+            return hi
+        m1 = (hi - lo) / 3 + lo
+        m2 = 2 * ((hi - lo) / 3) + lo
+        if f(m1) > f(m2):
+            return helper(m1, hi)
+        if f(m1) < f(m2):
+            return helper(lo, m2)
+    return helper(lo, hi)
 
 #######################################################################
 # the functions below are extra credit
 #######################################################################
+
 
 def find_boundaries(f):
     '''
