@@ -30,15 +30,23 @@ def find_smallest_positive(xs):
     '''
     if len(xs) == 0:
         return None
-    mid = len(xs) // 2
-    if xs[0] > 0:
-        return 0
-    if xs[mid] > 0:
-        return find_smallest_positive(xs[:mid])
-    if xs[mid] < 0:
-        return find_smallest_positive(xs[mid + 1:])
-    if xs[mid] == 0:
-        return mid + 1
+
+    def go(left, right):
+        if left == right:
+            if xs[left] > 0:
+                return left
+            else:
+                return None
+        mid = (left + right) // 2
+        if xs[mid] > 0:
+            right = mid
+        if xs[mid] < 0:
+            left = mid + 1
+        if xs[mid] == 0:
+            return mid + 1
+            left = mid + 1
+        return go(left, right)
+    return go(0, len(xs) - 1)
 
 
 def count_repeats(xs, x):
@@ -166,8 +174,8 @@ def argmin(f, lo, hi, epsilon=1e-3):
 
     if (hi - lo) < epsilon:
         return hi
-    m1 = (lo + lo + hi) / 3
-    m2 = (lo + hi + hi) / 3
+    m1 = (lo + hi) / 3 + lo
+    m2 = (lo + hi) / 3 + hi
 
     if f(m1) > f(m2):
         return argmin(f, m1, hi)
